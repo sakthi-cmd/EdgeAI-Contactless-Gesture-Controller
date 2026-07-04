@@ -1,0 +1,213 @@
+ST Edge AI Core v2.2.0-20266 2adc00962
+Created date          : 2026-07-04 15:07:36
+Parameters            : generate --target stm32l4 --name network_1 -m C:/Users/sakthi/Downloads/movement_predictor_static (4).onnx --compression none --verbosity 1 --workspace C:/Users/sakthi/AppData/Local/Temp/mxAI_workspace36656617863710014700102010141092582 --output C:/Users/sakthi/.stm32cubemx/network_1_output
+
+Exec/report summary (generate)
+--------------------------------------------------------------------------------------------------------------
+model file         :   C:\Users\sakthi\Downloads\movement_predictor_static (4).onnx                           
+type               :   onnx                                                                                   
+c_name             :   network_1                                                                              
+compression        :   none                                                                                   
+options            :   allocate-inputs, allocate-outputs                                                      
+optimization       :   balanced                                                                               
+target/series      :   stm32l4                                                                                
+workspace dir      :   C:\Users\sakthi\AppData\Local\Temp\mxAI_workspace36656617863710014700102010141092582   
+output dir         :   C:\Users\sakthi\.stm32cubemx\network_1_output                                          
+model_fmt          :   float                                                                                  
+model_name         :   movement_predictor_static_4                                                            
+model_hash         :   0x50e6902aa9eeb2af76342863d63b844f                                                     
+params #           :   50,949 items (199.02 KiB)                                                              
+--------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input', f32(1x30x1), 120 Bytes, activations                                           
+output 1/1         :   'output', f32(1x4), 16 Bytes, activations                                              
+macc               :   1,501,700                                                                              
+weights (ro)       :   202,004 B (197.27 KiB) (1 segment) / -1,792(-0.9%) vs float model                      
+activations (rw)   :   17,664 B (17.25 KiB) (1 segment) *                                                     
+ram (total)        :   17,664 B (17.25 KiB) = 17,664 + 0 + 0                                                  
+--------------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers are allocated in the activations buffer
+
+Model name - movement_predictor_static_4
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+m_id   layer (type,original)                               oshape                                            param/size            macc                 connected to   | c_size         c_macc          c_type         
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+50     _Constant_output_0 (Placeholder, Gather)            []                                                1/4                                                       |                                Gather_[2]     
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+51     fc_weight (Placeholder, Gemm)                       [b:4,c:64]                                        256/1,024                                                 | +16(+1.6%)     +260(+100.0%)   Dense_[o][3]   
+       fc_bias (Placeholder, Gemm)                         [b:4]                                             4/16                                                      | -16(-100.0%)                   
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+0      input (Input, )                                     [b:1,h:30,c:1]                                                                                              |                                
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+1      _lstm_Transpose_output_0 (Transpose, Transpose)     [b:1,h:30,c:1]                                                            15                        input   |                -15(-100.0%)    
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+22     _lstm_LSTM_output_0 (LSTM, LSTM)                    [b:1,h:30,w:1,c:64][b:1,h:1,c:64][b:1,h:1,c:64]   17,280/69,120      508,800     _lstm_Transpose_output_0   | -256(-0.4%)                    LSTM_[0]       
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+24     _lstm_Squeeze_output_0 (Reshape, Squeeze)           [b:1,h:30,c:64]                                                                       _lstm_LSTM_output_0   |                                
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+45     _lstm_LSTM_1_output_0 (LSTM, LSTM)                  [b:1,h:30,w:1,c:64][b:1,h:1,c:64][b:1,h:1,c:64]   33,408/133,632     992,640       _lstm_Squeeze_output_0   | -256(-0.2%)                    LSTM_[1]       
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+47     _lstm_Squeeze_1_output_0 (Reshape, Squeeze)         [b:1,h:30,c:64]                                                                     _lstm_LSTM_1_output_0   |                                
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+48     _lstm_Transpose_1_output_0 (Transpose, Transpose)   [b:1,h:30,c:64]                                                          960     _lstm_Squeeze_1_output_0   |                -960(-100.0%)   
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+50     _Gather_output_0 (Gather, Gather)                   [b:1,c:64]                                                                     _lstm_Transpose_1_output_0   |                                
+                                                                                                                                                  _Constant_output_0   | 
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+51     output (Gemm, Gemm)                                 [b:1,c:4]                                                                260             _Gather_output_0   |                -260(-100.0%)   
+                                                                                                                                                           fc_weight   | 
+                                                                                                                                                             fc_bias   | 
+------ --------------------------------------------------- ------------------------------------------------- ---------------- --------- ---------------------------- --- -------------- --------------- -------------- 
+model/c-model: macc=1,502,675/1,501,700 -975(-0.1%) weights=203,796/202,004 -1,792(-0.9%) activations=--/17,664 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : movement_predictor_static_4
+c-name                : network_1
+c-node #              : 4
+c-array #             : 23
+activations size      : 17664 (1 segment)
+weights size          : 202004 (1 segment)
+macc                  : 1501700
+inputs                : ['input_output']
+outputs               : ['output_output']
+
+C-Arrays (23)
+------ --------------------------------- ------------- ------------------------- ------------- --------- 
+c_id   name (*_array)                    item/size     domain/mem-pool           c-type        comment   
+------ --------------------------------- ------------- ------------------------- ------------- --------- 
+0      _Constant_output_0                1/4           weights/weights           const s32               
+1      _Gather_output_0_output           64/256        activations/**default**   float                   
+2      _lstm_LSTM_1_output_0_bias        256/1024      weights/weights           const float             
+3      _lstm_LSTM_1_output_0_kernel      16384/65536   weights/weights           const float             
+4      _lstm_LSTM_1_output_0_output0     1920/7680     activations/**default**   float                   
+5      _lstm_LSTM_1_output_0_output1     64/256        activations/**default**   float                   
+6      _lstm_LSTM_1_output_0_output2     64/256        activations/**default**   float                   
+7      _lstm_LSTM_1_output_0_recurrent   16384/65536   weights/weights           const float             
+8      _lstm_LSTM_1_output_0_scratch0    448/1792      activations/**default**   float                   
+9      _lstm_LSTM_output_0_bias          256/1024      weights/weights           const float             
+10     _lstm_LSTM_output_0_initial_c     64/256        weights/weights           const float             
+11     _lstm_LSTM_output_0_initial_h     64/256        weights/weights           const float             
+12     _lstm_LSTM_output_0_kernel        256/1024      weights/weights           const float             
+13     _lstm_LSTM_output_0_output0       1920/7680     activations/**default**   float                   
+14     _lstm_LSTM_output_0_output1       64/256        activations/**default**   float                   
+15     _lstm_LSTM_output_0_output2       64/256        activations/**default**   float                   
+16     _lstm_LSTM_output_0_peepholes     192/768       weights/weights           const float             
+17     _lstm_LSTM_output_0_recurrent     16384/65536   weights/weights           const float             
+18     _lstm_LSTM_output_0_scratch0      448/1792      activations/**default**   float                   
+19     input_output                      30/120        activations/**default**   float         /input    
+20     output_bias                       4/16          weights/weights           const float             
+21     output_output                     4/16          activations/**default**   float         /output   
+22     output_weights                    256/1024      weights/weights           const float             
+------ --------------------------------- ------------- ------------------------- ------------- --------- 
+
+C-Layers (4)
+------ ----------------------- ---- ------------ -------- -------- ------------------------------------ --------------------- 
+c_id   name (*_layer)          id   layer_type   macc     rom      tensors                              shape (array id)      
+------ ----------------------- ---- ------------ -------- -------- ------------------------------------ --------------------- 
+0      _lstm_LSTM_output_0     22   LSTM         508800   68864    I: input_output                      f32(1x30x1) (19)      
+                                                                   S: _lstm_LSTM_output_0_scratch0                            
+                                                                   W: _lstm_LSTM_output_0_kernel        f32(256x1) (12)       
+                                                                   W: _lstm_LSTM_output_0_recurrent     f32(256x64) (17)      
+                                                                   W: _lstm_LSTM_output_0_bias          f32(256) (9)          
+                                                                   W: _lstm_LSTM_output_0_initial_h     f32(64) (11)          
+                                                                   W: _lstm_LSTM_output_0_initial_c     f32(64) (10)          
+                                                                   W: _lstm_LSTM_output_0_peepholes     f32(192x1x1x1) (16)   
+                                                                   O: _lstm_LSTM_output_0_output0       f32(1x30x1x64) (13)   
+                                                                   O: _lstm_LSTM_output_0_output1       f32(1x1x64) (14)      
+                                                                   O: _lstm_LSTM_output_0_output2       f32(1x1x64) (15)      
+------ ----------------------- ---- ------------ -------- -------- ------------------------------------ --------------------- 
+1      _lstm_LSTM_1_output_0   45   LSTM         992640   133376   I: _lstm_LSTM_output_0_output0       f32(1x30x1x64) (13)   
+                                                                   S: _lstm_LSTM_1_output_0_scratch0                          
+                                                                   W: _lstm_LSTM_1_output_0_kernel      f32(256x64) (3)       
+                                                                   W: _lstm_LSTM_1_output_0_recurrent   f32(256x64) (7)       
+                                                                   W: _lstm_LSTM_1_output_0_bias        f32(256) (2)          
+                                                                   W: _lstm_LSTM_output_0_initial_h     f32(64) (11)          
+                                                                   W: _lstm_LSTM_output_0_initial_c     f32(64) (10)          
+                                                                   W: _lstm_LSTM_output_0_peepholes     f32(192x1x1x1) (16)   
+                                                                   O: _lstm_LSTM_1_output_0_output0     f32(1x30x1x64) (4)    
+                                                                   O: _lstm_LSTM_1_output_0_output1     f32(1x1x64) (5)       
+                                                                   O: _lstm_LSTM_1_output_0_output2     f32(1x1x64) (6)       
+------ ----------------------- ---- ------------ -------- -------- ------------------------------------ --------------------- 
+2      _Gather_output_0        50   Gather       0        4        I: _lstm_LSTM_1_output_0_output0     f32(1x30x1x64) (4)    
+                                                                   W: _Constant_output_0                int32(1) (0)          
+                                                                   O: _Gather_output_0_output           f32(1x1x64) (1)       
+------ ----------------------- ---- ------------ -------- -------- ------------------------------------ --------------------- 
+3      output                  51   Dense        260      1040     I: _Gather_output_0_output           f32(1x1x64) (1)       
+                                                                   W: output_weights                    f32(4x64) (22)        
+                                                                   W: output_bias                       f32(4) (20)           
+                                                                   O: output_output                     f32(1x4) (21)         
+------ ----------------------- ---- ------------ -------- -------- ------------------------------------ --------------------- 
+
+
+
+Number of operations per c-layer
+------- ------ ------------------------------ ----------- -------------- 
+c_id    m_id   name (type)                            #op           type 
+------- ------ ------------------------------ ----------- -------------- 
+0       22     _lstm_LSTM_output_0 (LSTM)         508,800   smul_f32_f32 
+1       45     _lstm_LSTM_1_output_0 (LSTM)       992,640   smul_f32_f32 
+2       50     _Gather_output_0 (Gather)                0   smul_f32_s32 
+3       51     output (Dense)                         260   smul_f32_f32 
+------- ------ ------------------------------ ----------- -------------- 
+total                                           1,501,700 
+
+Number of operation types
+---------------- ----------- ----------- 
+operation type             #           % 
+---------------- ----------- ----------- 
+smul_f32_f32       1,501,700      100.0% 
+smul_f32_s32               0        0.0% 
+
+Complexity report (model)
+------ ----------------------- ------------------------- ------------------------- ------ 
+m_id   name                    c_macc                    c_rom                     c_id   
+------ ----------------------- ------------------------- ------------------------- ------ 
+50     _Constant_output_0      |                  0.0%   |                  0.0%   [2]    
+51     fc_weight               |                  0.0%   |                  0.5%   [3]    
+22     _lstm_LSTM_output_0     ||||||||          33.9%   ||||||||          34.1%   [0]    
+45     _lstm_LSTM_1_output_0   ||||||||||||||||  66.1%   ||||||||||||||||  66.0%   [1]    
+------ ----------------------- ------------------------- ------------------------- ------ 
+macc=1,501,700 weights=202,004 act=17,664 ram_io=0
+ 
+ Requested memory size by section - "stm32l4" target
+ ------------------------------ -------- --------- ------- -------- 
+ module                             text    rodata    data      bss 
+ ------------------------------ -------- --------- ------- -------- 
+ NetworkRuntime1020_CM4_GCC.a     13,680         0       0        0 
+ network_1.o                         744        32   2,500      124 
+ network_1_data.o                     48        16      88        0 
+ lib (toolchain)*                  1,600        36       0        0 
+ ------------------------------ -------- --------- ------- -------- 
+ RT total**                       16,072        84   2,588      124 
+ ------------------------------ -------- --------- ------- -------- 
+ weights                               0   202,008       0        0 
+ activations                           0         0       0   17,664 
+ io                                    0         0       0        0 
+ ------------------------------ -------- --------- ------- -------- 
+ TOTAL                            16,072   202,092   2,588   17,788 
+ ------------------------------ -------- --------- ------- -------- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32l4" target
+  --------------------------------------------------
+               FLASH (ro)     %*   RAM (rw)       % 
+  --------------------------------------------------
+  RT total         18,744   8.5%      2,712   13.3% 
+  --------------------------------------------------
+  TOTAL           220,752            20,376         
+  --------------------------------------------------
+  *  rt/total
+
+
+Generated files (7)
+----------------------------------------------------------------------- 
+C:\Users\sakthi\.stm32cubemx\network_1_output\network_1_data_params.h   
+C:\Users\sakthi\.stm32cubemx\network_1_output\network_1_data_params.c   
+C:\Users\sakthi\.stm32cubemx\network_1_output\network_1_data.h          
+C:\Users\sakthi\.stm32cubemx\network_1_output\network_1_data.c          
+C:\Users\sakthi\.stm32cubemx\network_1_output\network_1_config.h        
+C:\Users\sakthi\.stm32cubemx\network_1_output\network_1.h               
+C:\Users\sakthi\.stm32cubemx\network_1_output\network_1.c               
